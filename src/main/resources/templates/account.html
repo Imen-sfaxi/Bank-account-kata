@@ -1,0 +1,124 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8"/>
+	<title>Ma Banque</title>
+	<link rel="stylesheet" type="text/css"
+		  href="../static/css/bootstrap.min.css"
+		  th:href="@{/css/bootstrap.min.css}" />
+	<link rel="stylesheet" type="text/css"
+		  href="../static/css/style.css"
+		  th:href="@{/css/style.css}" />
+</head>
+
+<body>
+<header>
+	<div class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<img alt="" src="https://static.societegenerale.fr/pro/PRO/Repertoire_par_type_de_contenus/Type_de_contenu/Header_footer/ngo_logo_header_sg.gif" height="33" width="184">
+		</div>
+	</div>
+</header>
+<div layout:fragment="content">
+	<div class="col-md-6">
+		<div class="panel panel-primary">
+			<div class="panel-heading">Consultation d'un account</div>
+			<div class="panel-body">
+				<form th:action="@{/accountConsultation}" method="get">
+					<div>
+						<label>Code Compte:</label> <input type="text" name="code"
+														 th:value="${code}" />
+						<button type="submit" class="btn btn-primary">Ok</button>
+					</div>
+				</form>
+				<div class="text-danger" th:if="${exception}"
+					 th:text="${exception.message}"></div>
+			</div>
+		</div>
+
+		<div class="panel panel-primary" th:if="${account}">
+			<div class="panel-heading">Informations sur le account</div>
+			<div class="panel-body">
+				<div>
+					<label>Client:</label> <label th:text="${account.client.name}"></label>
+				</div>
+				<div>
+					<label>Code:</label> <label th:text="${account.code}"></label>
+				</div>
+				<div>
+					<label>Solde:</label> <label th:text="${account.amount}"></label>
+				</div>
+				<div>
+					<label>Date Création:</label> <label
+						th:text="${account.creationDate}"></label>
+				</div>
+				<div>
+					<label>Type du account:</label> <label
+						th:text="${account.class.simpleName}"></label>
+				</div>
+				<div th:if="${account.class.simpleName=='CurrentAccount'}">
+					<label>Decouvert:</label> <label th:text="${account.discovered}"></label>
+				</div>
+				<div th:if="${account.class.simpleName=='AccountEpargne'}">
+					<label>Taux:</label> <label th:text="${account.rate}"></label>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-primary" th:if="${account}">
+				<div class="panel-heading">Opération sur le account</div>
+				<div class="panel-body">
+					<form th:action="@{/saveOperation}" method="post">
+						<div>
+							<label>Compte</label> <input type="hidden" name="code"
+														 th:value="${account.code}" /> <label th:text="${account.code}"></label>
+						</div>
+						<div>
+							<input type="radio" name="typeOperation" value="VERS"
+								   checked="checked"/>
+							<label>Versement</label> <input type="radio"
+															name="typeOperation" value="RETR"/>
+							<label>Retrait</label>
+						</div>
+						<div>
+							<label>Montant :</label> <input type="text" name="amount" />
+						</div>
+						<div class="text-danger"
+							 th:text="${#httpServletRequest.getParameter('error')}"></div>
+
+						<button type="submit" class="btn btn-primary">Save</button>
+					</form>
+				</div>
+			</div>
+
+		<div class="panel panel-primary" th:if="${account}">
+			<div class="panel-heading">Liste des opérations</div>
+			<div class="panel-body">
+				<table class="table table-striped">
+					<tr>
+						<th>Num</th>
+						<th>Type</th>
+						<th>Date</th>
+						<th>Montant</th>
+					</tr>
+					<tr th:each="o:${operationList}">
+						<td th:text="${o.number}"></td>
+						<td th:text="${o.class.simpleName}"></td>
+						<td th:text="${o.operationDate}"></td>
+						<td th:text="${o.amount}"></td>
+					</tr>
+
+				</table>
+				<div class="container">
+					<ul class="nav nav-pills">
+						<li th:each="p,status:${pages}"><a
+								th:href="@{/accountConsultation(code=${code},page=${status.index})}"
+								th:text="${status.index}"></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

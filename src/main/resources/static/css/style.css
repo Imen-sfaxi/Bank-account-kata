@@ -1,0 +1,21 @@
+.navbar-inverse {
+	background-color: white;
+	border-color: white;
+	margin-top: 20px;
+	align-content: center;
+	margin-left: 10%;
+}
+
+.panel-primary > .panel-heading{
+	background-color: #E60028;
+}
+
+.spacer40 {
+	margin-top:40px;
+}
+.col-md-6 {
+	margin-left: 15%;
+}
+.red {
+	color:red;
+}
